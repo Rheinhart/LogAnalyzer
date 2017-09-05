@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-import sys
-
 __author__ = 'taojun'
-import re
-from threading import Thread
+
+from threading import Thread,Lock
 from datetime import datetime
 import os
 from Tkinter import *
 import tkFileDialog
-import threading
 
 DEFAULT_DIR = 'D:/TestTools/Logs/'
 
@@ -59,7 +56,7 @@ class UI(Frame):
         self.listb  = Listbox(self)
         self.listb.pack(side = RIGHT, fill=BOTH, expand=5)
 
-class Controller(threading.Thread):
+class Controller(Thread):
 
     def __init__(self, lock, view = UI):
 
@@ -107,6 +104,7 @@ class Controller(threading.Thread):
         self.rps = 0
 
     def _initListbox(self):
+
         list_dirs = os.walk(DEFAULT_DIR)
         for root, dirs, files in list_dirs:
             for f in files:
@@ -166,7 +164,6 @@ class Controller(threading.Thread):
     def _rpsCal(self):
 
         if self.record:
-
             record = sorted(self.record, key=lambda x: x["datetime"])
             self.date_from = record[0]['datetime']
             self.date_to = record[-1]['datetime']
@@ -219,6 +216,6 @@ class Controller(threading.Thread):
 
 root = Tk()
 ui = UI(root)
-lock = threading.Lock()
+lock = Lock()
 app = Controller(lock, view = ui)
 app.view.mainloop()
