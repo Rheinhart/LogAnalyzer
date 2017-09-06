@@ -134,10 +134,6 @@ class Controller(Thread):
         self.view.Open.configure(stat='disable')
 
     def _processLog(self, file):
-
-        self.lock.acquire()
-        self._offButton()
-
         try:
             log = open(file, 'r')
             lines = log.readlines()
@@ -158,8 +154,7 @@ class Controller(Thread):
 
         finally:
             log.close()
-            self.lock.release()
-            self._onButton()
+
 
     def _rpsCal(self):
 
@@ -183,7 +178,6 @@ class Controller(Thread):
         self.files = self.view.tk.splitlist(filez)
 
     def _logCheck(self, rootDir=None):
-
         if self.files:
             for f in self.files:
                 print f
@@ -193,22 +187,29 @@ class Controller(Thread):
 
     def logCheck(self):
 
-        if len(sys.argv) < 1:
-            self._logCheck(sys.argv[1])
-        else:
-            self._logCheck(DEFAULT_DIR)
+        self.lock.acquire()
+        try:
+            self._reset()
+            if len(sys.argv) < 1:
+                self._logCheck(sys.argv[1])
+            else:
+                self._logCheck(DEFAULT_DIR)
 
-        self._rpsCal()
+            self._rpsCal()
+        except Exception:
+            print('Running Error!')
+
+        finally:
+            self.lock.release()
 
     def callback(self):
 
-        self._reset()
         self._selectFiles()
         self._updateFiles()
+        self._reset()
 
     def run(self):
 
-        self._reset()
         self.thread = Thread(target=self.logCheck)
         self.thread.start()
         self._refresh()
