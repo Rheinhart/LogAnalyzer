@@ -53,8 +53,17 @@ class UI(Frame):
         self.Run = Button(self, text='Run')
         self.Run.pack(side=RIGHT , fill=X)
 
-        self.listb  = Listbox(self)
+        scrollbar_v = Scrollbar(self, orient=VERTICAL)
+        scrollbar_h = Scrollbar(self, orient=HORIZONTAL)
+        self.listb = Listbox(self, yscrollcommand=scrollbar_v.set)
+        self.listb = Listbox(self, xscrollcommand=scrollbar_h.set)
+        scrollbar_v.config(command=self.listb.yview)
+        scrollbar_v.pack(side=RIGHT, fill=BOTH)
+        scrollbar_h.config(command=self.listb.xview)
+        scrollbar_h.pack(side=BOTTOM, fill=BOTH)
         self.listb.pack(side = RIGHT, fill=BOTH, expand=5)
+
+
 
 class Controller(Thread):
 
