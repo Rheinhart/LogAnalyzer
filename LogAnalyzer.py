@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-__author__ = 'taojun'
+__author__ = 'taojunli'
 
 from threading import Thread,Lock
 from datetime import datetime
